@@ -7,11 +7,10 @@ session_start();
 
 $GLOBALS['config'] = array(
   'mysql' => array(
-    //'host' => '104.248.228.108',
-    'host' => 'localhost',
-    'username' => 'modelein_app',
-    'password' => 'importante10@',
-    'db' => 'modelein_app'
+    'host' => getenv('DB_HOST') ?: 'localhost',
+    'username' => getenv('DB_USER') ?: 'modeleine_user',
+    'password' => getenv('DB_PASSWORD') ?: 'modeleine_password',
+    'db' => getenv('DB_NAME') ?: 'modeleine_app'
   ),
   'remember' => array(
     'cookie_name' => 'hash',
