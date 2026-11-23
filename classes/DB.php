@@ -17,7 +17,8 @@
 	function __construct() 
 	{
 	 try{
-	 	$this->_pdo = new PDO('mysql:host='. Config::get('mysql/host') .';dbname=' . Config::get('mysql/db'), Config::get('mysql/username'), Config::get('mysql/password'));
+	 	$this->_pdo = new PDO('mysql:host='. Config::get('mysql/host') .';dbname=' . Config::get('mysql/db') . ';charset=utf8mb4', Config::get('mysql/username'), Config::get('mysql/password'), array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"));
+	 	$this->_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	 }catch(PDOException $e){
 	 	die($e->getMessage());
 	 }
@@ -615,11 +616,7 @@
 	{
 		$sql = $this->select_context($table, $join, $columns, $where);
 
-	    //$sql = "{$action} FROM {$table} {$where_array}";
-
-		$value = array_key_exists(2, $where) == false;
-		
-		if (!$this->query($sql, array($value))->error()) 
+		if (!$this->query($sql)->error()) 
 		{
 		  return $this;	
 		}
@@ -629,12 +626,10 @@
 	public function action($action, $table, $where = array())
 	{
 		$where_array = $this->where_clause($where);
-		$value = array_key_exists(2, $where) == false;
-		//$value = $where['2'];
 		
 	    $sql = "{$action} FROM {$table} {$where_array}";
 		
-		if (!$this->query($sql, array($value))->error()) 
+		if (!$this->query($sql)->error()) 
 		{
 		  return $this;	
 		}

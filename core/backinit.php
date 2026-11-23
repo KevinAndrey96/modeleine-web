@@ -5,11 +5,10 @@ session_start();
 
 $GLOBALS['config'] = array(
   'mysql' => array(
-    //'host' => '104.248.228.108',
-    'host' => 'localhost',
-    'username' => 'modelein_admin',
-    'password' => 'importante10',
-    'db' => 'modelein_bd'
+    'host' => getenv('DB_HOST') ?: 'localhost',
+    'username' => getenv('DB_USER') ?: 'casting_user',
+    'password' => getenv('DB_PASSWORD') ?: 'casting_password',
+    'db' => getenv('DB_NAME') ?: 'casting_db'
   ),
   'remember' => array(
     'cookie_name' => 'hash',

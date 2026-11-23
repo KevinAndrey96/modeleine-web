@@ -1,4 +1,4 @@
-# Turnkey Talent & Casting Marketplace Web Platform Template
+# Turnkey Talent & Casting Marketplace Web Platform Template (php-casting-marketplace)
 
 [![PHP](https://img.shields.io/badge/PHP-8.1%20%7C%208.2-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0%20%7C%20MariaDB-00758F?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com)
@@ -19,7 +19,8 @@ A complete, multi-sided turnkey marketplace and casting web platform template en
 - **Job Posting & Casting Search**: Search filters by category, location, budget range, and duration (`jobs.php`, `searchcat.php`).
 - **Subscription & Tier Pricing**: Tiered plans for premium portfolio placement and client hiring credits (`pricing.php`).
 - **Object-Oriented Service Layer**: Clean separation of database interactions (`classes/DB.php`, `classes/User.php`), input sanitization, and session management.
-- **Environment-Aware Configuration**: Dynamic database resolution in `core/frontinit.php` and `core/init.php` supporting containerized variables and local servers.
+- **Automated Database Seeding**: Pre-configured schema and seed data in `database/schema.sql` automatically imported on container start.
+- **Environment-Aware Configuration**: Dynamic database resolution in `core/frontinit.php`, `core/init.php`, and `core/backinit.php` supporting containerized variables and local servers.
 
 ---
 
@@ -29,21 +30,23 @@ A complete, multi-sided turnkey marketplace and casting web platform template en
 +-------------------------------------------------------------+
 |                     Client Browser                          |
 +-------------------------------------------------------------+
-                              | HTTP (Port 8088)
-                              v
-+-------------------------------------------------------------+
-|                 Apache Web Server (PHP 8.1)                 |
-|  - Front Controller & Page Routers (index.php, jobs.php)    |
-|  - Talent Dashboard (/Model/) & Client Portal (/Client/)    |
-|  - Backoffice Administration (/Admin/)                      |
-|  - OOP Service Models (classes/DB.php, User.php)            |
-+-------------------------------------------------------------+
-                              | TCP / MySQL protocol
-                              v
+              | HTTP (Port 8088)           | HTTP (Port 8089)
+              v                            v
++-----------------------------+   +---------------------------+
+| Apache Web Server (PHP 8.1) |   |        phpMyAdmin         |
+| - Front Controller & Routers|   |   (Web Database Manager)  |
+| - Dashboards: Admin, Model, |   +---------------------------+
+|   and Client Portals        |                |
+| - OOP DB Layer & Services   |                |
++-----------------------------+                |
+              | TCP (Port 3306)                |
+              +-----------------+--------------+
+                                |
+                                v
 +-------------------------------------------------------------+
 |              Database Service (MariaDB 10.11)               |
-|  - Schema: modeleine_app                                    |
-|  - Persistent storage for users, casting calls, profiles    |
+| - Schema: casting_db                                        |
+| - Auto-seeded tables: users, castings, profiles, categories |
 +-------------------------------------------------------------+
 ```
 
@@ -55,19 +58,28 @@ Run the marketplace platform locally with zero pre-installed runtime dependencie
 
 ### 1. Clone the Repository
 ```bash
-git clone git@github.com-personal:KevinAndrey96/modeleine-web.git
-cd modeleine-web
+git clone git@github.com-personal:KevinAndrey96/php-casting-marketplace.git
+cd php-casting-marketplace
 ```
 
-### 2. Launch the Stack
+### 2. Configure Environment (Optional)
+```bash
+cp .env.example .env
+```
+
+### 3. Launch the Stack
 ```bash
 docker compose up -d
 ```
 
-### 3. Access the Portals
-- **Public Marketplace**: [http://localhost:8088](http://localhost:8088)
-- **Talent / Model Login**: [http://localhost:8088/login.php](http://localhost:8088/login.php)
-- **Admin Control Panel**: [http://localhost:8088/Admin/](http://localhost:8088/Admin/)
+### 4. Access the Portals
+| Service | URL | Default Credentials | Description |
+| :--- | :--- | :--- | :--- |
+| **Public Marketplace** | [http://localhost:8088](http://localhost:8088) | N/A | Landing page, catalog and search |
+| **Admin Portal** | [http://localhost:8088/Admin/](http://localhost:8088/Admin/) | `admin@casting.local` / `admin123` | Administrative backoffice |
+| **Client Portal** | [http://localhost:8088/Client/](http://localhost:8088/Client/) | `client@casting.local` / `admin123` | Recruiter and client portal |
+| **Talent / Model Portal** | [http://localhost:8088/Model/](http://localhost:8088/Model/) | `model@casting.local` / `admin123` | Model and talent dashboard |
+| **phpMyAdmin** | [http://localhost:8089](http://localhost:8089) | User: `casting_user` / `casting_password` | Web database interface |
 
 ---
 
@@ -75,14 +87,15 @@ docker compose up -d
 
 1. Upload all repository files to your server web root (`public_html/` or `/var/www/html/`).
 2. Create a MySQL database and user.
-3. Configure your database settings in `core/frontinit.php` and `core/init.php` or export environment variables:
+3. Import `database/schema.sql` into your database.
+4. Configure your database settings via environment variables or in `core/init.php` and `core/frontinit.php`:
    ```ini
    DB_HOST="localhost"
-   DB_NAME="modeleine_app"
+   DB_NAME="casting_db"
    DB_USER="your_db_user"
    DB_PASSWORD="your_db_password"
    ```
-4. Verify that Apache `mod_rewrite` is enabled for clean SEO URLs.
+5. Verify that Apache `mod_rewrite` is enabled for clean SEO URLs.
 
 ---
 

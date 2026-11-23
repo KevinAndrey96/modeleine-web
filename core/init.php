@@ -1,5 +1,5 @@
 <?php
-ini_set('display_errors', 'On');
+ini_set('display_errors', getenv('APP_DEBUG') === 'true' ? 1 : 0);
 error_reporting(E_ALL);
 
 
@@ -8,9 +8,9 @@ session_start();
 $GLOBALS['config'] = array(
   'mysql' => array(
     'host' => getenv('DB_HOST') ?: 'localhost',
-    'username' => getenv('DB_USER') ?: 'modeleine_user',
-    'password' => getenv('DB_PASSWORD') ?: 'modeleine_password',
-    'db' => getenv('DB_NAME') ?: 'modeleine_app'
+    'username' => getenv('DB_USER') ?: 'casting_user',
+    'password' => getenv('DB_PASSWORD') ?: 'casting_password',
+    'db' => getenv('DB_NAME') ?: 'casting_db'
   ),
   'remember' => array(
     'cookie_name' => 'hash',

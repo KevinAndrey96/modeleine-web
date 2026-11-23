@@ -2,7 +2,6 @@
 
 namespace PayPal\Test\Api;
 
-use PayPal\Api\object;
 use PayPal\Api\Payment;
 
 /**
